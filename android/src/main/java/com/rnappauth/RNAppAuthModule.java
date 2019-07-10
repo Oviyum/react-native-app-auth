@@ -312,6 +312,16 @@ public class RNAppAuthModule extends ReactContextBaseJavaModule implements Activ
                     createConnectionBuilder(this.dangerouslyAllowInsecureHttpRequests, this.tokenRequestHeaders)
             );
 
+            if (this.additionalParametersMap.containsKey("skipTokenExchange")
+                    && this.additionalParametersMap.get("skipTokenExchange").equals("true")) {
+                WritableMap map = Arguments.createMap();
+                map.putString("code", response.authorizationCode);
+                map.putString("state", response.state);
+                map.putString("redirectUri", response.request.redirectUri.toString());
+                this.promise.resolve(map);
+                return;
+            }
+
             AuthorizationService authService = new AuthorizationService(this.reactContext, configuration);
 
             TokenRequest tokenRequest = response.createTokenExchangeRequest(this.additionalParametersMap);

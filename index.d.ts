@@ -21,6 +21,7 @@ interface BuiltInParameters {
   display?: 'page' | 'popup' | 'touch' | 'wap';
   login_prompt?: string;
   prompt?: 'consent' | 'login' | 'none' | 'select_account';
+  skipTokenExchange: boolean;
 }
 
 type CustomHeaders = {
@@ -61,6 +62,12 @@ export interface RefreshResult {
   tokenType: string;
 }
 
+export interface AuthorizeWithoutTokenExchangeResult {
+  code: string; // i.e. authorizationCode
+  state: string;
+  redirectUri: string;
+}
+
 export interface RevokeConfiguration {
   tokenToRevoke: string;
   sendClientId?: boolean;
@@ -72,7 +79,7 @@ export interface RefreshConfiguration {
 
 export function prefetchConfiguration(config: AuthConfiguration): Promise<void>;
 
-export function authorize(config: AuthConfiguration): Promise<AuthorizeResult>;
+export function authorize(config: AuthConfiguration): Promise<AuthorizeResult | AuthorizeWithoutTokenExchangeResult>;
 
 export function refresh(
   config: AuthConfiguration,
